@@ -1,17 +1,13 @@
-<script>
-export default{
-    props:[''],
-    
-    data(){
-        return{
-            searchPatterns:[]
-        }
-    },
-    methods:{
-        checkBoxChanged(status){
-            this.$emit('search-patterns-changed', this.searchPatterns)
-        }
-    }
+<script setup>
+import {onMounted, ref} from 'vue'
+import {lastTimeWholeTableSearchParams, speciesPatterns, searchPatterns} from "~/main";
+const checkBoxChanged = (status)=>{
+  //this.$emit('search-patterns-changed', this.searchPatterns)
+  console.log(searchPatterns.value)
+}
+const speciesChanged = () => {
+  console.log(speciesPatterns.value);
+  lastTimeWholeTableSearchParams.isHuman = speciesPatterns.value;
 }
 </script>
 
@@ -25,10 +21,18 @@ export default{
                     <el-checkbox label="cORF" @change="checkBoxChanged"></el-checkbox>
                     <el-checkbox label="IRES" @change="checkBoxChanged"></el-checkbox>
                     <el-checkbox label="m6A" @change="checkBoxChanged"></el-checkbox>
-                    <el-checkbox label="TIS" @change="checkBoxChanged"></el-checkbox>
                 </el-checkbox-group>
             </el-col>
+
         </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-radio-group v-model="speciesPatterns">
+            <el-radio label="0" size="large" @change="speciesChanged">Mouse</el-radio>
+            <el-radio label="1" size="large" @change="speciesChanged">Human</el-radio>
+          </el-radio-group>
+        </el-col>
+      </el-row>
     </div>
 </template>
 

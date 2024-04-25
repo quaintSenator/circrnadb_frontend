@@ -2,74 +2,87 @@
 <script setup>
 
 import {
-    circRNA_search_results, result_count,
-    circRNA_identification, axios_server_root_url
+  circRNA_search_results, result_count,
+  circRNA_identification, axios_server_root_url,
+  lastTimeWholeTableSearchParams,
+  refresh_whole_table, circRNA_wholetable_page_sublist,
+  concerned_BSJ_isos,concerned_BSJID,fullscreenLoading
 } from '../../main.ts'
 import general_function_subtitle from '../general_function_subtitle.vue'
 import {onMounted, ref} from "vue";
+import { ElLoading } from 'element-plus'
 import {useRouter} from 'vue-router'
 import axios from 'axios'
 const router = useRouter()
 const currentPage_sublist = ref([])
 const currentRowRef = ref(null)
-let pageSize = 3
+
+let pageSize = 5
 function onCurrentPageChanged(jumpingToPageNo){
     //前面有currentPageNo - 1） * pageSize条记录
-    //当前页的第一条是
-    let firstRecordNo = (jumpingToPageNo - 1) * pageSize
-    currentPage_sublist.value = circRNA_search_results.value.slice(firstRecordNo, firstRecordNo + pageSize)
-    console.log('currentPageChanged, new PageNo = ' + jumpingToPageNo)
-    console.log(currentPage_sublist.value)
+    fullscreenLoading.value = true
+    console.log('onCurrentPageChanged')
+    lastTimeWholeTableSearchParams.pageNo = jumpingToPageNo
+    refresh_whole_table(lastTimeWholeTableSearchParams)
+
+    //console.log(currentPage_sublist.value)
 }
 function onPageSizeChanged(switchingToPageSize){
-    pageSize = switchingToPageSize
+    //pageSize = switchingToPageSize
 }
 function onCurrentRowChanged(currentRow, oldRow){
+    //在搜索结果表中点击任何一行，表示要跳转到这个BSJ的详情页
+    fullscreenLoading.value = true;
     currentRowRef.value = currentRow
+    let BSJtoSearchDetail = currentRowRef.value.BSJID
     //goto circRNA detail
     let url = ''
-    url = axios_server_root_url.value + '/circrnaidentification/circFulldbID/' + currentRowRef.value.circFulldbID
-    
-    axios.get(url).then(res=>{
+    url = axios_server_root_url.value + '/isoform/iso/' + BSJtoSearchDetail
+    console.log(url);
+    return axios.get(url).then(res=>{
         //写入全局变量circRNA_search_results,即表格内容
-        circRNA_identification.value = res.data.result[0]
-        console.log('after CurrentRowChanged, circRNA_identification = ')
-        console.log(circRNA_identification.value)
-        
-        //跳转到详情显示页
+        /*circRNA_identification.value = res.data.result[0]
+        console.log('after CurrentRowChanged, iso = ')
+        console.log(circRNA_identification.value)*/
+        res.data.result.forEach((iso)=>{
+          concerned_BSJ_isos.value.push(iso)
+        })
+        //concerned_BSJ_isos.value = res.data.result
+        concerned_BSJID.value = BSJtoSearchDetail
+        fullscreenLoading.value = false;
+      //跳转到详情显示页
         router.push('./circRNA_detail')
-
     }).catch(err=>{
         console.log(err)
     })
 }
 
 onMounted(()=>{
-    onCurrentPageChanged(1)
+    //onCurrentPageChanged(1)
 })
 </script>
 
 <template>
 <div>
     <general_function_subtitle title="Search Result:"></general_function_subtitle>
-
-        
-    <el-table :data="currentPage_sublist"
+    <el-table v-loading="fullscreenLoading"
+              :data="circRNA_wholetable_page_sublist"
     :lazy="true"
     :highlight-current-row="true"
     @current-change="onCurrentRowChanged"
-    style="width: 100%" highlight-current-row>
-        <el-table-column prop="circFulldbID" label="circFulldbID"></el-table-column>
-        <el-table-column prop="circAtlasID" label="circAtlasID"></el-table-column>
-        <el-table-column prop="circBaseID" label="circBaseID"></el-table-column>
-        <el-table-column prop="gene" label="gene"></el-table-column>
-        <el-table-column prop="isoform_count" label="isoform_count"></el-table-column>
-        <el-table-column prop="miRNAbindingsite" label="miRNAbindingsite"></el-table-column>
-        <el-table-column prop="RBPbindingsite" label="RBPbindingsite"></el-table-column>
-        <el-table-column prop="has_cORF" label="cORF"></el-table-column>
-        <el-table-column prop="has_IRES" label="IRES"></el-table-column>
-        <el-table-column prop="has_m6A" label="m6A"></el-table-column>
-        <el-table-column prop="has_TIS" label="TIS"></el-table-column>
+    style="width: 100%" highlight-current-row
+    >
+        <el-table-column prop="BSJID" label="BSJID"></el-table-column>
+        <el-table-column prop="species" label="species"></el-table-column>
+        <el-table-column prop="geneid" label="gene_id"></el-table-column>
+        <el-table-column prop="genename" label="gene_name"></el-table-column>
+        <el-table-column prop="miRNAcount" label="miRNA binding site"></el-table-column>
+        <el-table-column prop="RBPcount" label="RBP binding site"></el-table-column>
+        <el-table-column prop="ORFcount" label="ORF count"></el-table-column>
+        <el-table-column prop="IREScount" label="IRES count"></el-table-column>
+        <el-table-column prop="m6Acount" label="m6A count"></el-table-column>
+        <el-table-column prop="TIScount" label="TIS count"></el-table-column>
+        <el-table-column prop="isoformcount" label="isoform count"></el-table-column>
     </el-table>
     
     <el-pagination
@@ -78,9 +91,7 @@ onMounted(()=>{
     @update:current-page="onCurrentPageChanged"
     @update:page-size="onPageSizeChanged"
     background layout="prev, pager, next"  />
-
 </div>
-
 </template>
 
 <style>

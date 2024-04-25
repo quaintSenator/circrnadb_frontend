@@ -11,7 +11,7 @@ export default {
                 ],
             formContent:{
                 IDtype:'circAtlasID',
-                inputID:''
+                inputID:'',
             }
             
         }

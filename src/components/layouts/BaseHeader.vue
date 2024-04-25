@@ -14,6 +14,9 @@ import { RouterView } from 'vue-router';
     <el-menu-item index="3">
        <router-link :to="{ path: '/circRNA_search_result' }" replace:true>Online Analysis</router-link>
     </el-menu-item>
+    <el-menu-item index="4">
+       <router-link :to="{ path: '/blast_root' }" replace:true>BLAST</router-link>
+    </el-menu-item>
     <el-menu-item h="full" @click="toggleDark()">
       <button
         class="border-none w-full bg-transparent cursor-pointer"

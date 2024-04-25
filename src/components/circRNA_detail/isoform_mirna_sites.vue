@@ -11,7 +11,6 @@ const mirnainteractions = reactive([])
 const selected_mirna = ref(null)
 const current_isoID = ref('')
 function selectedMirnaChanged(newRow, oldRow){
-    console.log('testing selected row')
     console.log(newRow)
     selected_mirna.value = newRow.binding_sites
 }
