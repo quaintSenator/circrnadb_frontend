@@ -22,6 +22,7 @@ import axios from "axios";
 import ORF_detail from "~/components/ORF_detail/ORF_detail.vue";
 import m6A_detail from "~/components/m6A_detail/m6A_detail.vue"
 import RBP_detail from "~/components/RBP_detail/RBP_detail.vue";
+import home_page from "~/components/home_page/home_page.vue";
 
 const app = createApp(App);
 const routes=[
@@ -33,7 +34,8 @@ const routes=[
     { path:'/IRES_detail', component:IRES_detail},
     { path:'/ORF_detail', component:ORF_detail},
     { path:'/m6A_detail', component:m6A_detail},
-    { path:'/RBP_detail', component:RBP_detail}
+    { path:'/RBP_detail', component:RBP_detail},
+    { path:'/home_page', component:home_page}
 ]
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
@@ -130,6 +132,7 @@ export const m6Aloading = ref(false)
 export const m6Adetails = ref([])
 export const m6Acount = ref(0)
 export const RBPloading = ref(false)
+export const currentBSJ_is_human = ref(true)
 
 export const RBPcount = ref(0)
 export const RBPdetails = ref([])
@@ -160,12 +163,54 @@ export const refresh_whole_table = (SearchParams) =>{
     //sending Request
     return axios.get(url).then(res=>{
         //写入全局变量circRNA_search_results,即表格内容
+
+        //修理人类的数据以匹配小鼠
+        for(var item of res.data.result){
+            if(item.hasOwnProperty('geneid')){
+                let temp = item.geneid;
+                delete item.geneid;
+                item.gene_id = temp;
+            }
+            if(item.hasOwnProperty('genename')){
+                let temp = item.genename;
+                delete item.genename;
+                item.gene_name = temp;
+            }
+            if(item.hasOwnProperty('RBPcount')){
+                let temp = item.RBPcount;
+                delete item.RBPcount;
+                item.RBP_count = temp;
+            }
+            if(item.hasOwnProperty('ORFcount')){
+                let temp = item.ORFcount;
+                delete item.ORFcount;
+                item.ORF_count = temp;
+            }
+            if(item.hasOwnProperty('m6Acount')){
+                let temp = item.m6Acount;
+                delete item.m6Acount;
+                item.m6A_count = temp;
+            }
+            if(item.hasOwnProperty('miRNAcount')){
+                let temp = item.miRNAcount;
+                delete item.miRNAcount;
+                item.miRNA_count = temp;
+            }
+            if(item.hasOwnProperty('ciriisoform_count') && item.hasOwnProperty('isocisoformcount')){
+                item.isoform_count = item.ciriisoform_count + item.isocisoformcount;
+            }
+            item.IRES_count = 0;
+        }
+
         circRNA_wholetable_page_sublist.value = res.data.result
 
         console.log(circRNA_wholetable_page_sublist.value);
+
+
         result_count.value = res.data.count
         fullscreenLoading.value = false
-        //跳转到结果显示页
+
+
         router.push('./circRNA_search_result')
     })
 }

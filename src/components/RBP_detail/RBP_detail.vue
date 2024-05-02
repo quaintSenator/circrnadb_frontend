@@ -33,21 +33,13 @@ function onCurrentPageChange(newPageNo){
   let url = axios_server_root_url.value + '/RBP/'
       + sameIso + '/' + RBP_table_pageNo.value + '/' + RBP_pageSize.value;
   console.log(url)
-  /*axios.get(url).then((res) => {
+  axios.get(url).then((res) => {
     console.log(res.data)
-    ORFdetails.value = res.data.result
-    ORFcount.value = res.data.count
-    if(ORFcount.value > 0){
-      router.push('./ORF_detail')
-      ORFloading.value = false;
-    }
-    else{
-      ElMessage('No ORF found in this isoform.')
-      ORFloading.value = false;
-    }
+    RBPdetails.value = res.data.result
+    RBPloading.value = false;
   }).catch((err)=>{
     console.log(err)
-  })*/
+  })
 }
 function onCurrentRowChange(newRow){
   console.log(newRow)

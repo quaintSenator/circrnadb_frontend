@@ -38,13 +38,14 @@ function selectingRow(selectedRow){
             <el-table-column prop="BSJID" label="BSJID"></el-table-column>
 <!--            <el-table-column prop="circAtlasID" label="circAtlasID"></el-table-column>
             <el-table-column prop="circBaseID" label="circBaseID"></el-table-column>-->
-            <el-table-column prop="gene" label="gene"></el-table-column>
+              <el-table-column prop="isoform_count" label="isoform_count"></el-table-column>
+              <el-table-column prop="gene_id" label="gene_id"></el-table-column>
             <el-table-column prop="has_IRES" label="has_IRES"></el-table-column>
             <el-table-column prop="has_cORF" label="has_cORF"></el-table-column>
             <el-table-column prop="has_m6A" label="has_m6A"></el-table-column>
-            <el-table-column prop="isoform_count" label="isoform_count   "></el-table-column>
-            <el-table-column prop="miRNAbindingsite" label="miRNAbindingsite   "></el-table-column>
-            <el-table-column prop="RBPbindingsite" label="RBPbindingsite   "></el-table-column>
+
+            <el-table-column prop="miRNAbindingsite" label="miRNAbindingsite"></el-table-column>
+            <el-table-column prop="RBPbindingsite" label="RBPbindingsite"></el-table-column>
             </el-table>
          </el-row>
          

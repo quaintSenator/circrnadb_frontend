@@ -7,7 +7,9 @@ import { RouterView } from 'vue-router';
 
 <template>
   <el-menu class="el-menu-demo" mode="horizontal">
-    <el-menu-item index="1">Home</el-menu-item>
+    <el-menu-item index="1">
+      <router-link :to="{ path: '/home_page' }" replace:true>Home</router-link>
+    </el-menu-item>
     <el-menu-item index="2">
        <router-link :to="{ path: '/circRNA_search' }" replace:true>Search</router-link>
     </el-menu-item>

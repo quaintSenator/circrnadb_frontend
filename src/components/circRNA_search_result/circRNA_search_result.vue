@@ -74,15 +74,17 @@ onMounted(()=>{
     >
         <el-table-column prop="BSJID" label="BSJID"></el-table-column>
         <el-table-column prop="species" label="species"></el-table-column>
-        <el-table-column prop="geneid" label="gene_id"></el-table-column>
-        <el-table-column prop="genename" label="gene_name"></el-table-column>
-        <el-table-column prop="miRNAcount" label="miRNA binding site"></el-table-column>
-        <el-table-column prop="RBPcount" label="RBP binding site"></el-table-column>
-        <el-table-column prop="ORFcount" label="ORF count"></el-table-column>
-        <el-table-column prop="IREScount" label="IRES count"></el-table-column>
-        <el-table-column prop="m6Acount" label="m6A count"></el-table-column>
-        <el-table-column prop="TIScount" label="TIS count"></el-table-column>
-        <el-table-column prop="isoformcount" label="isoform count"></el-table-column>
+        <el-table-column prop="circAtlasID" label="circAtlasID"></el-table-column>
+        <el-table-column prop="circBaseID" label="circBaseID"></el-table-column>
+        <el-table-column prop="gene_id" label="gene_id"></el-table-column>
+        <el-table-column prop="gene_name" label="gene_name"></el-table-column>
+        <el-table-column prop="miRNA_count" label="miRNA binding site"></el-table-column>
+        <el-table-column prop="RBP_count" label="RBP binding site"></el-table-column>
+        <el-table-column prop="ORF_count" label="ORF count"></el-table-column>
+        <el-table-column prop="IRES_count" label="IRES count"></el-table-column>
+        <el-table-column prop="m6A_count" label="m6A count"></el-table-column>
+        <el-table-column prop="isoform_count" label="isoform count"></el-table-column>
+
     </el-table>
     
     <el-pagination

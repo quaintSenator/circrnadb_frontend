@@ -3,8 +3,10 @@ import axios from 'axios'
 import circRNA_ID_form from './circRNA_ID_form.vue'
 import SearchCondition_circRNA from './SearchCondition_circRNA.vue'
 import {useRoute, useRouter} from 'vue-router'
-import {circRNA_search_results, result_count,
-  refresh_whole_table, lastTimeWholeTableSearchParams, searchPatterns} from '../../main.ts'
+import {
+  circRNA_search_results, result_count,
+  refresh_whole_table, lastTimeWholeTableSearchParams, searchPatterns, currentBSJ_is_human
+} from '../../main.ts'
 import { axios_server_root_url} from '../../main.ts'
 import general_function_subtitle from '../general_function_subtitle.vue'
 let IDtype = ''
@@ -35,9 +37,11 @@ function onFormSubmitted(formContent){
     lastTimeWholeTableSearchParams.IDtype = formContent.IDtype
     lastTimeWholeTableSearchParams.ID = formContent.inputID
     lastTimeWholeTableSearchParams.patternCode = getSearchPatternCode()
-    console.log(lastTimeWholeTableSearchParams.patternCode)
     lastTimeWholeTableSearchParams.pageNo = 1
     lastTimeWholeTableSearchParams.pageSize = 5
+    console.log(lastTimeWholeTableSearchParams)
+    currentBSJ_is_human.value = (lastTimeWholeTableSearchParams.isHuman === 1);
+
   refresh_whole_table(lastTimeWholeTableSearchParams)
 }
 function onSearchConditionChanging(changedPatterns){

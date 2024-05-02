@@ -3,10 +3,25 @@ import {ElMessage} from "element-plus";
 
 defineEmits(['concerned-isoform-changed'])
 import {
-  concerned_BSJ_isos, concerned_BSJID,
-  concerned_expression, axios_server_root_url,
-  miRNAdetails, miRNAcount, IRESdetails, IREScount,
-  ORFdetails, ORFcount, ORFloading, m6Aloading, m6Adetails, m6Acount, RBPdetails, RBPloading, RBPcount, option
+  concerned_BSJ_isos,
+  concerned_BSJID,
+  concerned_expression,
+  axios_server_root_url,
+  miRNAdetails,
+  miRNAcount,
+  IRESdetails,
+  IREScount,
+  ORFdetails,
+  ORFcount,
+  ORFloading,
+  m6Aloading,
+  m6Adetails,
+  m6Acount,
+  RBPdetails,
+  RBPloading,
+  RBPcount,
+  option,
+  currentBSJ_is_human
 } from '../../main.ts'
 import {useRouter} from 'vue-router'
 const router = useRouter()
@@ -41,6 +56,7 @@ const segments = ref([])
 const iso_begin = ref(0)
 const iso_end = ref(0)
 const isolist = ref([])
+const expressTableLoading = ref(false)
 onMounted(()=>{
   isolist.value = getIsolist()
 })
@@ -51,7 +67,8 @@ const updateopts = ref({
 })
 const getExpression = (isoID) => {
   console.log('getExpression...')
-  let url = axios_server_root_url.value + '/expression/' + isoID
+  let url = axios_server_root_url.value + '/expression/' + isoID + '/1'
+  expressTableLoading.value = true;
   axios.get(url).then((res) => {
     concerned_expression.value = res.data.result[0]
     console.log(concerned_expression.value)
@@ -67,6 +84,56 @@ const getExpression = (isoID) => {
         exprOption_human.series[1].data.push(concerned_expression.value.readArray[i]);
       }
     }
+    expressTableLoading.value = false;
+  }).catch((err)=>{
+    console.log(err)
+  })
+}
+const getMouseExpression = (isoID) => {
+  console.log('getMouseExpression...')
+  let url = axios_server_root_url.value + '/expression/' + isoID + '/0'
+  expressTableLoading.value = true;
+  axios.get(url).then((res) => {
+    concerned_expression.value = res.data.result[0]
+    /*"result": [
+      {
+          "isoformID": "chr5:143715284-143715649|143715284-143715649",
+          "TBcount": [
+              0,
+              0
+          ],
+          "CCcount": [
+              0,
+              0
+          ],
+          "HPcount": [
+              0,
+              0
+          ],
+          "STcount": [
+              0,
+              2
+          ]
+      }
+  ]
+* */
+    console.log(concerned_expression.value)
+    //后端//0 for isoc & 1 for ciri
+    exprOption_mouse.series[0].data = [
+      concerned_expression.value.TBcount[0],
+      concerned_expression.value.CCcount[0],
+      concerned_expression.value.HPcount[0],
+      concerned_expression.value.STcount[0]
+    ]
+    exprOption_mouse.series[1].data = [
+      concerned_expression.value.TBcount[1],
+      concerned_expression.value.CCcount[1],
+      concerned_expression.value.HPcount[1],
+      concerned_expression.value.STcount[1]
+    ]
+
+
+    expressTableLoading.value = false;
   }).catch((err)=>{
     console.log(err)
   })
@@ -181,12 +248,58 @@ const exprOption_human = reactive({
     }
   ]
 })
+
+const exprOption_mouse = reactive({
+  //backgroundColor: '#FFFFFF',
+  title: {
+    text: 'Isoform Expression'
+  },
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+  legend: {},
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+  xAxis: {
+    type: 'value',
+    boundaryGap: [0, 0.01]
+  },
+  yAxis: {
+    type: 'category',
+    data: ['Total Brain', 'Celebral Cortex', 'hippocampus', 'striatum']
+  },
+  series: [
+    {
+      name: 'isoc',
+      type: 'bar',
+      data: []
+    },
+    {
+      name: 'CIRI-long',
+      type: 'bar',
+      data: []
+    }
+  ]
+})
 const is_function_loading = ref(false)
 const iso_function_search_radio = ref(0)
 function onCurrentRowChanged(newRow, oldRow){
     console.log('isolist row changed')
     //刷新差异表达表
-    getExpression(newRow.isoformID)
+    if(currentBSJ_is_human.value){
+      getExpression(newRow.isoformID)
+    }
+    else{
+      getMouseExpression(newRow.isoformID)
+    }
+
     //点击一个新的isoform行，表明需要查看其环形可视化图
     let ex_values = []
     let intro_values = []
@@ -417,8 +530,11 @@ function iso_function_model_changed(param){
             <v-chart class="chart" :option="option" :update-optionsoptions="updateopts" autoresize />
          </el-row>
       <general_function_subtitle title="isoform Expression"></general_function_subtitle>
-      <el-row>
-        <v-chart class="chart" :option="exprOption_human" :update-optionsoptions="updateopts" autoresize />
+      <el-row v-loading="expressTableLoading">
+        <v-chart class="chart" v-if="currentBSJ_is_human"
+        :option="exprOption_human" :update-optionsoptions="updateopts" autoresize />
+        <v-chart class="chart" v-if="!currentBSJ_is_human"
+                 :option="exprOption_mouse" :update-optionsoptions="updateopts" autoresize />
       </el-row>
         <general_function_subtitle title="function detail"></general_function_subtitle>
       <el-row>
