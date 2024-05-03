@@ -10,7 +10,7 @@ export default {
                 {value:'circFulldbID',label:'circFulldbID'},
                 ],
             formContent:{
-                IDtype:'circAtlasID',
+                IDtype:'circFulldbID',
                 inputID:'',
             }
             
@@ -22,6 +22,7 @@ export default {
     methods:{
         onSubmit(){
             //onSubmit在提交键按下时触发
+            console.log(this.formContent.IDtype)
             this.$emit('search-submit', this.formContent)
         }
     }
@@ -33,7 +34,7 @@ export default {
     <div>
         <el-row>
             <el-col :span="4">
-                <el-select v-model="formContent.IDtype" placeholder="circAtlasID">
+                <el-select v-model="formContent.IDtype" placeholder="circFulldb">
                     <el-option v-for="option in options" :key="option.value"
                     :label="option.label" :value="option.value"></el-option>
                 </el-select>

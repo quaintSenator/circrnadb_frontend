@@ -45,7 +45,7 @@ function onFormSubmitted(formContent){
   refresh_whole_table(lastTimeWholeTableSearchParams)
 }
 function onSearchConditionChanging(changedPatterns){
-    searchPatterns = changedPatterns
+    searchPatterns.value = changedPatterns
     patternCode = getSearchPatternCode()
 }
 </script>

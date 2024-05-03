@@ -14,7 +14,7 @@ import { RouterView } from 'vue-router';
        <router-link :to="{ path: '/circRNA_search' }" replace:true>Search</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-       <router-link :to="{ path: '/circRNA_search_result' }" replace:true>Online Analysis</router-link>
+       <router-link :to="{ path: '/download' }" replace:true>Download</router-link>
     </el-menu-item>
     <el-menu-item index="4">
        <router-link :to="{ path: '/blast_root' }" replace:true>BLAST</router-link>

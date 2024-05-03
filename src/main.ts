@@ -23,6 +23,7 @@ import ORF_detail from "~/components/ORF_detail/ORF_detail.vue";
 import m6A_detail from "~/components/m6A_detail/m6A_detail.vue"
 import RBP_detail from "~/components/RBP_detail/RBP_detail.vue";
 import home_page from "~/components/home_page/home_page.vue";
+import download from "~/components/download/download.vue";
 
 const app = createApp(App);
 const routes=[
@@ -35,7 +36,8 @@ const routes=[
     { path:'/ORF_detail', component:ORF_detail},
     { path:'/m6A_detail', component:m6A_detail},
     { path:'/RBP_detail', component:RBP_detail},
-    { path:'/home_page', component:home_page}
+    { path:'/home_page', component:home_page},
+    { path:'/download', component:download},
 ]
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
@@ -150,12 +152,12 @@ export const refresh_whole_table = (SearchParams) =>{
     if(typeof SearchParams.ID === "undefined" || SearchParams.ID.length == 0){
         //ID为空，查询所有的记录。对应
         url = axios_server_root_url.value + '/bsj/' + SearchParams.isHuman + '/' +
-            + SearchParams.pageNo + '/' + SearchParams.pageSize
+            + SearchParams.pageNo + '/' + SearchParams.pageSize + '/' + SearchParams.IDtype
             + '/' + SearchParams.patternCode;
     }
     else{
         url = axios_server_root_url.value + '/bsj/' + SearchParams.isHuman + '/' +
-            + SearchParams.pageNo + '/' + SearchParams.pageSize
+            + SearchParams.pageNo + '/' + SearchParams.pageSize + '/' + SearchParams.IDtype
             + '/' + SearchParams.patternCode + '/' + SearchParams.ID;
     }
     console.log(url)
